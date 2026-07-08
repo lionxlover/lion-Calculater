@@ -1,0 +1,24 @@
+[package]
+name          = "lion-calculator"
+version       = "0.1.0"
+edition       = "2021"
+description   = "Lion Calculator — Modern native calculator for LionOS"
+authors       = ["Lion <lion@leonux.org>"]
+license       = "MIT"
+
+# Requires: rustc ≥ 1.82  and  Slint 1.17
+# Build:    cargo build --release
+# Run:      ./target/release/lion-calculator
+
+[dependencies]
+slint  = "1.17"
+chrono = { version = "0.4" }
+
+[build-dependencies]
+slint-build = "1.17"
+
+[profile.release]
+opt-level     = 3
+lto           = "thin"
+codegen-units = 1
+strip         = true

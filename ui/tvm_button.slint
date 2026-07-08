@@ -1,0 +1,47 @@
+// ═══════════════════════════════════════════════════════════════════════════
+//  Lion Calculator  ·  tvm_button.slint
+//  LionOS Design System  ·  Rust + Slint 1.17
+// ═══════════════════════════════════════════════════════════════════════════
+
+import { LT } from "tokens.slint";
+
+// ── TVMButton ──────────────────────────────────────────────────────────────
+export component TVMButton inherits Rectangle {
+    in property <string> lbl:    "";
+    in property <string> val:    "?";
+    in property <bool>   active: false;
+    callback clicked();
+
+    width: 55px;
+    height: 55px;
+    border-radius: LT.r-btn;
+    border-width: 1px;
+    border-color: root.active ? LT.bdr-act : LT.bdr;
+    background: root.active ? #1a2848 : ta.has-hover ? LT.btn-hov : LT.btn;
+    animate background   { duration: LT.dur-fast; }
+    animate border-color { duration: LT.dur-fast; }
+
+    ta := TouchArea { clicked => { root.clicked(); } }
+    VerticalLayout {
+        alignment: center;
+        spacing: 3px;
+        padding: 6px;
+        Text {
+            text: root.lbl;
+            color: root.active ? LT.t-op : LT.t-mut;
+            font-size: 10px;
+            font-weight: 700;
+            horizontal-alignment: center;
+            animate color { duration: LT.dur-fast; }
+        }
+        Text {
+            text: root.val;
+            color: root.active ? LT.t-op : LT.t-main;
+            font-size: 14px;
+            font-weight: 500;
+            horizontal-alignment: center;
+            overflow: elide;
+            animate color { duration: 150ms; }
+        }
+    }
+}

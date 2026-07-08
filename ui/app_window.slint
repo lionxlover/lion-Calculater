@@ -1,0 +1,370 @@
+// ═══════════════════════════════════════════════════════════════════════════
+//  Lion Calculator  ·  app_window.slint
+//  LionOS Design System  ·  Rust + Slint 1.17
+// ═══════════════════════════════════════════════════════════════════════════
+
+import { LT, HistoryEntry }  from "tokens.slint";
+import { ModeTab }            from "mode_tab.slint";
+import { BasicPad }           from "basic_pad.slint";
+import { ScientificPad }      from "scientific_pad.slint";
+import { FinancialPad }       from "financial_pad.slint";
+import { ProgrammerPad }      from "programmer_pad.slint";
+import { HistoryPanel }       from "history_panel.slint";
+
+// ═══════════════════════════════════════════════════════════════════════════
+//  MainWindow
+// ═══════════════════════════════════════════════════════════════════════════
+export component MainWindow inherits Window {
+    title: "Lion Calculator";
+    property <length> target-width: root.current-mode == 0 ? 282px : root.current-mode == 1 ? 412px : root.current-mode == 2 ? 347px : 412px;
+    property <length> target-height: root.current-mode == 0 ? 568px : root.current-mode == 1 ? 633px : root.current-mode == 2 ? 633px : 568px;
+
+    width: target-width;
+    height: target-height;
+
+    background: LT.bg;
+    forward-focus: kbd;
+    default-font-family: "Inter";
+
+    // ── Props from Rust ────────────────────────────────────────────────────
+    in property <string> display-text:  "0";
+    in property <string> expr-text:     "";
+    in-out property <int> current-mode:  0;
+    in property <bool> deg-mode:      true;
+    in property <string> active-base:   "DEC";
+    in property <string> hex-text:      "0";
+    in property <string> dec-text:      "0";
+    in property <string> oct-text:      "0";
+    in property <string> bin-text:      "0";
+    in property <string> tvm-n:         "?";
+    in property <string> tvm-iy:        "?";
+    in property <string> tvm-pv:        "?";
+    in property <string> tvm-pmt:       "?";
+    in property <string> tvm-fv:        "?";
+    in property <string> tvm-sel:       "";
+    in property <string> mem-indicator: "";
+    in property <[HistoryEntry]> history: [];
+
+    // ── Callbacks to Rust ──────────────────────────────────────────────────
+    callback button-pressed(string);
+    callback mode-changed(int);
+    callback history-clicked(int);
+
+    private property <bool> hist-open: false;
+
+    // ── Keyboard scope ─────────────────────────────────────────────────────
+    kbd := FocusScope {
+        x: 0;
+        y: 0;
+        width: parent.width;
+        height: parent.height;
+        key-pressed(event) => {
+            if event.text == "0" { root.button-pressed("0"); return accept; }
+            if event.text == "1" { root.button-pressed("1"); return accept; }
+            if event.text == "2" { root.button-pressed("2"); return accept; }
+            if event.text == "3" { root.button-pressed("3"); return accept; }
+            if event.text == "4" { root.button-pressed("4"); return accept; }
+            if event.text == "5" { root.button-pressed("5"); return accept; }
+            if event.text == "6" { root.button-pressed("6"); return accept; }
+            if event.text == "7" { root.button-pressed("7"); return accept; }
+            if event.text == "8" { root.button-pressed("8"); return accept; }
+            if event.text == "9" { root.button-pressed("9"); return accept; }
+            if event.text == "." { root.button-pressed("."); return accept; }
+            if event.text == "+" { root.button-pressed("+"); return accept; }
+            if event.text == "-" { root.button-pressed("−"); return accept; }
+            if event.text == "*" { root.button-pressed("×"); return accept; }
+            if event.text == "/" { root.button-pressed("÷"); return accept; }
+            if event.text == "%" { root.button-pressed("%"); return accept; }
+            if event.text == "^" { root.button-pressed("xʸ"); return accept; }
+            if event.text == "(" { root.button-pressed("("); return accept; }
+            if event.text == ")" { root.button-pressed(")"); return accept; }
+            if event.text == "=" || event.text == Key.Return { root.button-pressed("="); return accept; }
+            if event.text == Key.Backspace { root.button-pressed("⌫"); return accept; }
+            if event.text == Key.Escape { root.button-pressed("AC"); return accept; }
+            if event.text == "a" || event.text == "A" { root.button-pressed("A"); return accept; }
+            if event.text == "b" || event.text == "B" { root.button-pressed("B"); return accept; }
+            if event.text == "c" || event.text == "C" { root.button-pressed("C"); return accept; }
+            if event.text == "d" || event.text == "D" { root.button-pressed("D"); return accept; }
+            if event.text == "f" || event.text == "F" { root.button-pressed("F"); return accept; }
+            return reject;
+        }
+    }
+
+    // ── Main card ──────────────────────────────────────────────────────────
+    Rectangle {
+        x: 0;
+        y: 0;
+        width: parent.width;
+        height: parent.height;
+        background: LT.card;
+
+        // Tab bar
+        Rectangle {
+            x: 0;
+            y: 0;
+            width: parent.width;
+            height: 54px;
+            background: LT.card;
+            HorizontalLayout {
+                alignment: center;
+                spacing: 16px;
+                padding-top: 11px;
+                padding-bottom: 11px;
+                padding-left: 10px;
+                padding-right: 48px;
+                ModeTab {
+                    lbl: "  Bas  ";
+                    sel: root.current-mode == 0;
+                    horizontal-stretch: 1;
+                    clicked => { root.current-mode = 0; root.mode-changed(0); }
+                }
+
+                ModeTab {
+                    lbl: "  Sci  ";
+                    sel: root.current-mode == 1;
+                    horizontal-stretch: 1;
+                    clicked => { root.current-mode = 1; root.mode-changed(1); }
+                }
+
+                ModeTab {
+                    lbl: "  Fin  ";
+                    sel: root.current-mode == 2;
+                    horizontal-stretch: 1;
+                    clicked => { root.current-mode = 2; root.mode-changed(2); }
+                }
+
+                ModeTab {
+                    lbl: "  Pro  ";
+                    sel: root.current-mode == 3;
+                    horizontal-stretch: 1;
+                    clicked => { root.current-mode = 3; root.mode-changed(3); }
+                }
+            }
+            // History toggle
+            Rectangle {
+                x: parent.width - 44px;
+                y: 11px;
+                width: 32px;
+                height: 32px;
+                border-radius: 10px;
+                background: ta-h.has-hover ? LT.btn-hov : transparent;
+                animate background { duration: 80ms; }
+                ta-h := TouchArea {
+                    clicked => { root.hist-open = !root.hist-open; }
+                }
+
+                Text {
+                    text: "☰";
+                    color: LT.t-mut;
+                    font-size: 16px;
+                    horizontal-alignment: center;
+                    vertical-alignment: center;
+                }
+            }
+        }
+
+        // Top divider
+        Rectangle {
+            x: 0;
+            y: 54px;
+            width: parent.width;
+            height: 1px;
+            background: LT.div;
+        }
+
+        // Display — standard modes
+        if root.current-mode != 3: Rectangle {
+            x: 0;
+            y: 55px;
+            width: parent.width;
+            height: 165px;
+            background: transparent;
+            VerticalLayout {
+                alignment: end;
+                padding-left: 24px;
+                padding-right: 24px;
+                padding-top: 10px;
+                padding-bottom: 14px;
+                spacing: 4px;
+                HorizontalLayout {
+                    alignment: end;
+                    spacing: 10px;
+                    if root.mem-indicator != "": Text {
+                        text: root.mem-indicator;
+                        color: LT.t-op;
+                        font-size: 12px;
+                        font-weight: 700;
+                    }
+                    if root.current-mode == 1: Text {
+                        text: root.deg-mode ? "DEG" : "RAD";
+                        color: LT.t-mut;
+                        font-size: 12px;
+                        font-weight: 700;
+                    }
+                }
+
+                Text {
+                    text: root.expr-text;
+                    color: LT.t-exp;
+                    font-size: 15px;
+                    horizontal-alignment: right;
+                    overflow: elide;
+                }
+
+                Text {
+                    text: root.display-text;
+                    color: LT.t-dis;
+                    font-size: 64px;
+                    font-weight: 700;
+                    horizontal-alignment: right;
+                    overflow: elide;
+                    animate color { duration: 150ms; }
+                }
+            }
+        }
+
+        // Display — programmer 4-base view
+        if root.current-mode == 3: Rectangle {
+            x: 0;
+            y: 55px;
+            width: parent.width;
+            height: 165px;
+            background: LT.surface;
+            VerticalLayout {
+                alignment: center;
+                padding-left: 24px;
+                padding-right: 24px;
+                padding-top: 14px;
+                padding-bottom: 14px;
+                spacing: 10px;
+                HorizontalLayout {
+                    spacing: 12px;
+                    Text {
+                        text: "HEX";
+                        color: LT.t-prog;
+                        font-size: 12px;
+                        font-weight: 700;
+                        width: 36px;
+                    }
+
+                    Text {
+                        text: root.hex-text;
+                        color: LT.t-dis;
+                        font-size: 15px;
+                        horizontal-alignment: right;
+                        overflow: elide;
+                    }
+                }
+
+                HorizontalLayout {
+                    spacing: 12px;
+                    Text {
+                        text: "DEC";
+                        color: LT.t-prog;
+                        font-size: 12px;
+                        font-weight: 700;
+                        width: 36px;
+                    }
+
+                    Text {
+                        text: root.dec-text;
+                        color: LT.t-dis;
+                        font-size: 15px;
+                        horizontal-alignment: right;
+                        overflow: elide;
+                    }
+                }
+
+                HorizontalLayout {
+                    spacing: 12px;
+                    Text {
+                        text: "OCT";
+                        color: LT.t-prog;
+                        font-size: 12px;
+                        font-weight: 700;
+                        width: 36px;
+                    }
+
+                    Text {
+                        text: root.oct-text;
+                        color: LT.t-dis;
+                        font-size: 15px;
+                        horizontal-alignment: right;
+                        overflow: elide;
+                    }
+                }
+
+                HorizontalLayout {
+                    spacing: 12px;
+                    Text {
+                        text: "BIN";
+                        color: LT.t-prog;
+                        font-size: 12px;
+                        font-weight: 700;
+                        width: 36px;
+                    }
+
+                    Text {
+                        text: root.bin-text;
+                        color: LT.t-dis;
+                        font-size: 13px;
+                        horizontal-alignment: right;
+                        overflow: elide;
+                    }
+                }
+            }
+        }
+
+        // Mid divider
+        Rectangle {
+            x: 0;
+            y: 220px;
+            width: parent.width;
+            height: 1px;
+            background: LT.div;
+        }
+
+        // Button pads
+        if root.current-mode == 0: BasicPad {
+            x: (parent.width - self.width) / 2;
+            y: 221px;
+            button-pressed(lbl) => { root.button-pressed(lbl); }
+        }
+        if root.current-mode == 1: ScientificPad {
+            x: (parent.width - self.width) / 2;
+            y: 221px;
+            button-pressed(lbl) => { root.button-pressed(lbl); }
+        }
+        if root.current-mode == 2: FinancialPad {
+            x: (parent.width - self.width) / 2;
+            y: 221px;
+            tvm-n: root.tvm-n;
+            tvm-iy: root.tvm-iy;
+            tvm-pv: root.tvm-pv;
+            tvm-pmt: root.tvm-pmt;
+            tvm-fv: root.tvm-fv;
+            tvm-sel: root.tvm-sel;
+            button-pressed(lbl) => { root.button-pressed(lbl); }
+        }
+        if root.current-mode == 3: ProgrammerPad {
+            x: (parent.width - self.width) / 2;
+            y: 221px;
+            active-base: root.active-base;
+            button-pressed(lbl) => { root.button-pressed(lbl); }
+        }
+
+        // History slide-over panel
+        HistoryPanel {
+            y: 0;
+            container-width: parent.width;
+            container-height: parent.height;
+            items: root.history;
+            open: root.hist-open;
+            close => { root.hist-open = false; }
+            item-clicked(i) => {
+                root.hist-open = false;
+                root.history-clicked(i);
+            }
+        }
+    }
+}

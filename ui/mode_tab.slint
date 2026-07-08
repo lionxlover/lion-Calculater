@@ -1,0 +1,30 @@
+// ═══════════════════════════════════════════════════════════════════════════
+//  Lion Calculator  ·  mode_tab.slint
+//  LionOS Design System  ·  Rust + Slint 1.17
+// ═══════════════════════════════════════════════════════════════════════════
+
+import { LT } from "tokens.slint";
+
+// ── ModeTab ────────────────────────────────────────────────────────────────
+export component ModeTab inherits Rectangle {
+    in property <string> lbl: "";
+    in property <bool>   sel: false;
+    callback clicked();
+
+    height: 32px;
+    horizontal-stretch: 1;
+    border-radius: LT.r-tab;
+    background: root.sel ? LT.surface : ta.has-hover ? LT.btn-hov : transparent;
+    animate background { duration: LT.dur-base; easing: ease; }
+
+    ta := TouchArea { clicked => { root.clicked(); } }
+    Text {
+        text: root.lbl;
+        color: root.sel ? LT.t-main : ta.has-hover ? LT.t-main : LT.t-mut;
+        font-size: 13px;
+        font-weight: root.sel ? 700 : 400;
+        horizontal-alignment: center;
+        vertical-alignment: center;
+        animate color { duration: LT.dur-fast; }
+    }
+}
