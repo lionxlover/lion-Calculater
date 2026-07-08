@@ -1,0 +1,114 @@
+// ═══════════════════════════════════════════════════════════════════════════
+//  Lion Calculator  ·  programmer_pad.slint
+//  LionOS Design System  ·  Rust + Slint 1.17
+// ═══════════════════════════════════════════════════════════════════════════
+
+import { LT } from "tokens.slint";
+import { CalcButton } from "calc_button.slint";
+import { BaseButton } from "base_button.slint";
+
+// ── ProgrammerPad ──────────────────────────────────────────────────────────
+export component ProgrammerPad {
+    in property <string> active-base: "DEC";
+    callback button-pressed(string);
+
+    // Per-base enablement flags
+    property <bool> hex-en:  root.active-base == "HEX";
+    property <bool> dec-en:  root.active-base == "HEX" || root.active-base == "DEC";
+    property <bool> oct-en:  root.active-base == "HEX" || root.active-base == "DEC" || root.active-base == "OCT";
+    // BIN: only 0 and 1 are valid (no helper flag needed — handle per-button)
+
+    GridLayout {
+        spacing: LT.gap;
+        padding: LT.pad;
+
+        // Row 1: Base selectors + AC + backspace
+        Row {
+            BaseButton { lbl: "HEX"; active: root.active-base == "HEX";
+                clicked => { root.button-pressed("BASE:HEX"); } }
+            BaseButton { lbl: "DEC"; active: root.active-base == "DEC";
+                clicked => { root.button-pressed("BASE:DEC"); } }
+            BaseButton { lbl: "OCT"; active: root.active-base == "OCT";
+                clicked => { root.button-pressed("BASE:OCT"); } }
+            BaseButton { lbl: "BIN"; active: root.active-base == "BIN";
+                clicked => { root.button-pressed("BASE:BIN"); } }
+            CalcButton { lbl: "AC"; fg: LT.t-dn; clicked => { root.button-pressed("AC"); } }
+            CalcButton { has-icon: true; icon: @image-url("svg/delete-left.svg"); fg: LT.t-dn; clicked => { root.button-pressed("⌫"); } }
+        }
+
+        // Row 2: A B  7 8 9  AND
+        Row {
+            CalcButton { lbl: "A"; fg: root.hex-en ? LT.t-main : LT.t-dim;
+                clicked => { if root.hex-en { root.button-pressed("A"); } } }
+            CalcButton { lbl: "B"; fg: root.hex-en ? LT.t-main : LT.t-dim;
+                clicked => { if root.hex-en { root.button-pressed("B"); } } }
+            // 7: disabled in BIN
+            CalcButton { has-icon: true; icon: @image-url("svg/7.svg");
+                fg: root.oct-en ? LT.t-main : LT.t-dim;
+                clicked => { if root.oct-en { root.button-pressed("7"); } } }
+            // 8: disabled in OCT and BIN
+            CalcButton { has-icon: true; icon: @image-url("svg/8.svg");
+                fg: root.dec-en ? LT.t-main : LT.t-dim;
+                clicked => { if root.dec-en { root.button-pressed("8"); } } }
+            // 9: disabled in OCT and BIN
+            CalcButton { has-icon: true; icon: @image-url("svg/9.svg");
+                fg: root.dec-en ? LT.t-main : LT.t-dim;
+                clicked => { if root.dec-en { root.button-pressed("9"); } } }
+            CalcButton { lbl: "AND"; fs: 14px; fg: LT.t-acc;
+                clicked => { root.button-pressed("AND"); } }
+        }
+
+        // Row 3: C D  4 5 6  OR
+        Row {
+            CalcButton { lbl: "C"; fg: root.hex-en ? LT.t-main : LT.t-dim;
+                clicked => { if root.hex-en { root.button-pressed("C"); } } }
+            CalcButton { lbl: "D"; fg: root.hex-en ? LT.t-main : LT.t-dim;
+                clicked => { if root.hex-en { root.button-pressed("D"); } } }
+            // 4-6: disabled in BIN
+            CalcButton { has-icon: true; icon: @image-url("svg/4.svg");
+                fg: root.oct-en ? LT.t-main : LT.t-dim;
+                clicked => { if root.oct-en { root.button-pressed("4"); } } }
+            CalcButton { has-icon: true; icon: @image-url("svg/5.svg");
+                fg: root.oct-en ? LT.t-main : LT.t-dim;
+                clicked => { if root.oct-en { root.button-pressed("5"); } } }
+            CalcButton { has-icon: true; icon: @image-url("svg/6.svg");
+                fg: root.oct-en ? LT.t-main : LT.t-dim;
+                clicked => { if root.oct-en { root.button-pressed("6"); } } }
+            CalcButton { lbl: "OR"; fg: LT.t-acc; clicked => { root.button-pressed("OR"); } }
+        }
+
+        // Row 4: E F  1 2 3  XOR
+        Row {
+            CalcButton { lbl: "E"; fg: root.hex-en ? LT.t-main : LT.t-dim;
+                clicked => { if root.hex-en { root.button-pressed("E"); } } }
+            CalcButton { lbl: "F"; fg: root.hex-en ? LT.t-main : LT.t-dim;
+                clicked => { if root.hex-en { root.button-pressed("F"); } } }
+            // 1: always enabled (valid in all bases)
+            CalcButton { has-icon: true; icon: @image-url("svg/1.svg"); clicked => { root.button-pressed("1"); } }
+            // 2-3: disabled in BIN
+            CalcButton { has-icon: true; icon: @image-url("svg/2.svg");
+                fg: root.oct-en ? LT.t-main : LT.t-dim;
+                clicked => { if root.oct-en { root.button-pressed("2"); } } }
+            CalcButton { has-icon: true; icon: @image-url("svg/3.svg");
+                fg: root.oct-en ? LT.t-main : LT.t-dim;
+                clicked => { if root.oct-en { root.button-pressed("3"); } } }
+            CalcButton { lbl: "XOR"; fs: 14px; fg: LT.t-acc;
+                clicked => { root.button-pressed("XOR"); } }
+        }
+
+        // Row 5: << >>  0 (wide)  NOT  =
+        Row {
+            CalcButton { lbl: "<<"; fg: LT.t-op; clicked => { root.button-pressed("<<"); } }
+            CalcButton { lbl: ">>"; fg: LT.t-op; clicked => { root.button-pressed(">>"); } }
+            CalcButton { colspan: 2; cols: 2; has-icon: true; icon: @image-url("svg/0.svg");
+                clicked => { root.button-pressed("0"); } }
+            CalcButton { lbl: "NOT"; fs: 14px; fg: LT.t-acc;
+                clicked => { root.button-pressed("NOT"); } }
+            CalcButton {
+                has-icon: true; icon: @image-url("svg/equals.svg");
+                fg: #ffffff;
+                bg: LT.eq; hov: LT.eq-hov; prs: LT.eq-prs;
+                clicked => { root.button-pressed("="); } }
+        }
+    }
+}

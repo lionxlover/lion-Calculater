@@ -1,0 +1,84 @@
+// ═══════════════════════════════════════════════════════════════════════════
+//  Lion Calculator  ·  history_panel.slint
+//  LionOS Design System  ·  Rust + Slint 1.17
+// ═══════════════════════════════════════════════════════════════════════════
+
+import { LT, HistoryEntry } from "tokens.slint";
+import { ScrollView } from "std-widgets.slint";
+
+// ── HistoryPanel ───────────────────────────────────────────────────────────
+export component HistoryPanel {
+    in property <[HistoryEntry]> items: [];
+    in property <bool>           open:  false;
+    in property <length>         container-width;   // pass parent.width from caller
+    in property <length>         container-height;  // pass parent.height from caller
+    callback close();
+    callback item-clicked(int);
+
+    x: root.open ? root.container-width - self.width : root.container-width;
+    animate x { duration: 280ms; easing: cubic-bezier(0.2, 1.0, 0.3, 1.0); }
+
+    width:  260px;
+    height: root.container-height;
+
+    // Background card
+    Rectangle {
+        background: LT.surface;
+        // Left border line
+        Rectangle {
+            x: 0; y: 0;
+            width: 1px;
+            height: parent.height;
+            background: LT.bdr;
+        }
+        VerticalLayout {
+            padding-left: 16px;
+            padding-right: 16px;
+            padding-top: 16px;
+            padding-bottom: 16px;
+            spacing: 12px;
+
+            HorizontalLayout {
+                Text { text: "History"; color: LT.t-main; font-size: 16px; font-weight: 700; }
+                Rectangle { horizontal-stretch: 1; }
+                Rectangle {
+                    width: 28px; height: 28px; border-radius: 8px;
+                    background: ta-cl.has-hover ? LT.btn-hov : transparent;
+                    ta-cl := TouchArea { clicked => { root.close(); } }
+                    Text { text: "✕"; color: LT.t-mut; font-size: 14px;
+                        horizontal-alignment: center; vertical-alignment: center; }
+                }
+            }
+            Rectangle { height: 1px; background: LT.bdr; }
+
+            if root.items.length == 0 : Text {
+                text: "No history yet.";
+                color: LT.t-mut;
+                font-size: 14px;
+                horizontal-alignment: center;
+            }
+
+            ScrollView {
+                VerticalLayout {
+                    spacing: 12px;
+                    padding-right: 8px; // Leave room for scrollbar
+                    for entry[idx] in root.items : Rectangle {
+                height: 58px;
+                border-radius: 10px;
+                background: ta-e.has-hover ? LT.btn-hov : transparent;
+                animate background { duration: 80ms; }
+                ta-e := TouchArea { clicked => { root.item-clicked(idx); } }
+                VerticalLayout {
+                    alignment: center;
+                    padding: 8px;
+                    spacing: 3px;
+                    Text { text: entry.expr;   color: LT.t-mut;  font-size: 12px; overflow: elide; }
+                    Text { text: "= " + entry.result; color: LT.t-main; font-size: 15px;
+                        font-weight: 500; overflow: elide; }
+                }
+            }
+                }
+            }
+        }
+    }
+}

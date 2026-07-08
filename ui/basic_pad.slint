@@ -1,0 +1,175 @@
+// ═══════════════════════════════════════════════════════════════════════════
+//  Lion Calculator  ·  basic_pad.slint
+//  LionOS Design System  ·  Rust + Slint 1.17
+// ═══════════════════════════════════════════════════════════════════════════
+
+import { LT } from "tokens.slint";
+import { CalcButton } from "calc_button.slint";
+
+// ── BasicPad ───────────────────────────────────────────────────────────────
+export component BasicPad {
+
+    callback button-pressed(string);
+
+    GridLayout {
+        spacing: LT.gap;
+        padding: LT.pad;
+
+        // Row 0
+        Row {
+            CalcButton {
+                lbl: "AC";
+                is-square: true;
+                fg: LT.t-dn;
+                clicked => { root.button-pressed("AC"); }
+            }
+
+            CalcButton {
+                has-icon: true;
+                icon: @image-url("svg/delete-left.svg");
+                is-square: true;
+                fg: LT.t-dn;
+                clicked => { root.button-pressed("⌫"); }
+            }
+
+            CalcButton {
+                has-icon: true;
+                icon: @image-url("svg/percent.svg");
+                is-square: true;
+                fg: LT.t-op;
+                clicked => { root.button-pressed("%"); }
+            }
+
+            CalcButton {
+                has-icon: true;
+                icon: @image-url("svg/divide.svg");
+                is-square: true;
+                fg: LT.t-op;
+                clicked => { root.button-pressed("÷"); }
+            }
+        }
+
+        // Row 1
+        Row {
+            CalcButton {
+                has-icon: true;
+                icon: @image-url("svg/7.svg");
+                is-square: true;
+                clicked => { root.button-pressed("7"); }
+            }
+
+            CalcButton {
+                has-icon: true;
+                icon: @image-url("svg/8.svg");
+                is-square: true;
+                clicked => { root.button-pressed("8"); }
+            }
+
+            CalcButton {
+                has-icon: true;
+                icon: @image-url("svg/9.svg");
+                is-square: true;
+                clicked => { root.button-pressed("9"); }
+            }
+
+            CalcButton {
+                has-icon: true;
+                icon: @image-url("svg/xmark.svg");
+                is-square: true;
+                fg: LT.t-op;
+                clicked => { root.button-pressed("×"); }
+            }
+        }
+
+        // Row 2
+        Row {
+            CalcButton {
+                has-icon: true;
+                icon: @image-url("svg/4.svg");
+                is-square: true;
+                clicked => { root.button-pressed("4"); }
+            }
+
+            CalcButton {
+                has-icon: true;
+                icon: @image-url("svg/5.svg");
+                is-square: true;
+                clicked => { root.button-pressed("5"); }
+            }
+
+            CalcButton {
+                has-icon: true;
+                icon: @image-url("svg/6.svg");
+                is-square: true;
+                clicked => { root.button-pressed("6"); }
+            }
+
+            CalcButton {
+                has-icon: true;
+                icon: @image-url("svg/minus.svg");
+                is-square: true;
+                fg: LT.t-op;
+                clicked => { root.button-pressed("−"); }
+            }
+        }
+
+        // Row 3
+        Row {
+            CalcButton {
+                has-icon: true;
+                icon: @image-url("svg/1.svg");
+                is-square: true;
+                clicked => { root.button-pressed("1"); }
+            }
+
+            CalcButton {
+                has-icon: true;
+                icon: @image-url("svg/2.svg");
+                is-square: true;
+                clicked => { root.button-pressed("2"); }
+            }
+
+            CalcButton {
+                has-icon: true;
+                icon: @image-url("svg/3.svg");
+                is-square: true;
+                clicked => { root.button-pressed("3"); }
+            }
+
+            CalcButton {
+                has-icon: true;
+                icon: @image-url("svg/plus.svg");
+                is-square: true;
+                fg: LT.t-op;
+                clicked => { root.button-pressed("+"); }
+            }
+        }
+
+        // Row 4
+        Row {
+            CalcButton {
+                colspan: 2; cols: 2;
+                has-icon: true;
+                icon: @image-url("svg/0.svg");
+                clicked => { root.button-pressed("0"); }
+            }
+
+            CalcButton {
+                lbl: ".";
+                is-square: true;
+                clicked => { root.button-pressed("."); }
+            }
+
+            CalcButton {
+                has-icon: true;
+                icon: @image-url("svg/equals.svg");
+                is-square: true;
+                fg: #ffffff;
+                bg: LT.eq;
+                hov: LT.eq-hov;
+                prs: LT.eq-prs;
+                clicked => { root.button-pressed("="); }
+            }
+        }
+    }
+}

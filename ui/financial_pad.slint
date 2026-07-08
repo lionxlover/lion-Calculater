@@ -1,0 +1,81 @@
+// ═══════════════════════════════════════════════════════════════════════════
+//  Lion Calculator  ·  financial_pad.slint
+//  LionOS Design System  ·  Rust + Slint 1.17
+// ═══════════════════════════════════════════════════════════════════════════
+
+import { LT } from "tokens.slint";
+import { CalcButton } from "calc_button.slint";
+import { TVMButton } from "tvm_button.slint";
+
+// ── FinancialPad ───────────────────────────────────────────────────────────
+export component FinancialPad {
+    in property <string> tvm-n:   "?";
+    in property <string> tvm-iy:  "?";
+    in property <string> tvm-pv:  "?";
+    in property <string> tvm-pmt: "?";
+    in property <string> tvm-fv:  "?";
+    in property <string> tvm-sel: "";
+    callback button-pressed(string);
+
+    GridLayout {
+        spacing: LT.gap;
+        padding: LT.pad;
+
+        Row {
+            TVMButton { lbl: "N";   val: root.tvm-n;   active: root.tvm-sel == "N";
+                clicked => { root.button-pressed("TVM:N");   } }
+            TVMButton { lbl: "I/Y"; val: root.tvm-iy;  active: root.tvm-sel == "I/Y";
+                clicked => { root.button-pressed("TVM:I/Y"); } }
+            TVMButton { lbl: "PV";  val: root.tvm-pv;  active: root.tvm-sel == "PV";
+                clicked => { root.button-pressed("TVM:PV");  } }
+            TVMButton { lbl: "PMT"; val: root.tvm-pmt; active: root.tvm-sel == "PMT";
+                clicked => { root.button-pressed("TVM:PMT"); } }
+            TVMButton { lbl: "FV";  val: root.tvm-fv;  active: root.tvm-sel == "FV";
+                clicked => { root.button-pressed("TVM:FV");  } }
+        }
+
+        Row {
+            CalcButton { lbl: "CPT"; fg: LT.t-acc; clicked => { root.button-pressed("CPT");  } }
+            CalcButton { lbl: "AC";  fg: LT.t-dn;  clicked => { root.button-pressed("AC");   } }
+            CalcButton { has-icon: true; icon: @image-url("svg/delete-left.svg"); fg: LT.t-dn;  clicked => { root.button-pressed("⌫");   } }
+            CalcButton { has-icon: true; icon: @image-url("svg/percent.svg"); fg: LT.t-op;  clicked => { root.button-pressed("%");    } }
+            CalcButton { has-icon: true; icon: @image-url("svg/divide.svg"); fg: LT.t-op;  clicked => { root.button-pressed("÷");    } }
+        }
+
+        Row {
+            CalcButton { lbl: "Tax+"; fs: 15px; clicked => { root.button-pressed("Tax+"); } }
+            CalcButton { has-icon: true; icon: @image-url("svg/7.svg"); clicked => { root.button-pressed("7"); } }
+            CalcButton { has-icon: true; icon: @image-url("svg/8.svg"); clicked => { root.button-pressed("8"); } }
+            CalcButton { has-icon: true; icon: @image-url("svg/9.svg"); clicked => { root.button-pressed("9"); } }
+            CalcButton { has-icon: true; icon: @image-url("svg/xmark.svg"); fg: LT.t-op; clicked => { root.button-pressed("×"); } }
+        }
+
+        Row {
+            CalcButton { lbl: "Tax−"; fs: 15px; clicked => { root.button-pressed("Tax−"); } }
+            CalcButton { has-icon: true; icon: @image-url("svg/4.svg"); clicked => { root.button-pressed("4"); } }
+            CalcButton { has-icon: true; icon: @image-url("svg/5.svg"); clicked => { root.button-pressed("5"); } }
+            CalcButton { has-icon: true; icon: @image-url("svg/6.svg"); clicked => { root.button-pressed("6"); } }
+            CalcButton { has-icon: true; icon: @image-url("svg/minus.svg"); fg: LT.t-op; clicked => { root.button-pressed("−"); } }
+        }
+
+        Row {
+            CalcButton { lbl: "Mar"; clicked => { root.button-pressed("Mar"); } }
+            CalcButton { has-icon: true; icon: @image-url("svg/1.svg"); clicked => { root.button-pressed("1"); } }
+            CalcButton { has-icon: true; icon: @image-url("svg/2.svg"); clicked => { root.button-pressed("2"); } }
+            CalcButton { has-icon: true; icon: @image-url("svg/3.svg"); clicked => { root.button-pressed("3"); } }
+            CalcButton { has-icon: true; icon: @image-url("svg/plus.svg"); fg: LT.t-op; clicked => { root.button-pressed("+"); } }
+        }
+
+        Row {
+            CalcButton { lbl: "CLR"; fs: 14px; clicked => { root.button-pressed("CLR TVM"); } }
+            CalcButton { colspan: 2; cols: 2; has-icon: true; icon: @image-url("svg/0.svg"); clicked => { root.button-pressed("0"); } }
+            CalcButton { lbl: "."; clicked => { root.button-pressed("."); } }
+            CalcButton {
+                has-icon: true; icon: @image-url("svg/equals.svg");
+                fg: #ffffff;
+                bg: LT.eq; hov: LT.eq-hov; prs: LT.eq-prs;
+                clicked => { root.button-pressed("="); }
+            }
+        }
+    }
+}

@@ -1,0 +1,87 @@
+// ═══════════════════════════════════════════════════════════════════════════
+//  Lion Calculator  ·  tokens.slint
+//  LionOS Design System  ·  Rust + Slint 1.17
+// ═══════════════════════════════════════════════════════════════════════════
+
+// ── Design Tokens ─────────────────────────────────────────────────────────
+export global LT {
+    // ── LeonUX Design System Tokens ──────────────────────────────────────────
+
+    // Surfaces
+    out property <color> bg-base:           #0B0D0F;
+    out property <color> bg-surface:        #15171B;
+    out property <color> bg-surface-raised: #1C1F23;
+    out property <color> bg-glass:          rgba(21, 23, 27, 0.60);
+    out property <color> bg-glass-heavy:    rgba(12, 14, 17, 0.86);
+    out property <color> bg-glass-soft:     rgba(255, 255, 255, 0.03);
+    out property <color> bg-glass-hover:    rgba(255, 255, 255, 0.07);
+
+    // Borders
+    out property <color> border-subtle:     rgba(255, 255, 255, 0.06);
+    out property <color> border-base:       rgba(255, 255, 255, 0.10);
+    out property <color> border-strong:     rgba(255, 255, 255, 0.18);
+
+    // Accents
+    out property <color> primary:           #5B9DFA;
+    out property <color> primary-dim:       #3A7BD5;
+    out property <color> primary-glow:      rgba(91, 157, 250, 0.35);
+    out property <color> primary-soft:      rgba(91, 157, 250, 0.12);
+    out property <color> accent-purple:     #9D7AFA;
+    out property <color> accent-green:      #5EE29A;
+    out property <color> accent-amber:      #FAB95B;
+    out property <color> accent-red:        #F28B82;
+
+    // Text Scale
+    out property <color> text-primary:      #F4F5F7;
+    out property <color> text-secondary:    #9CA3AF;
+    out property <color> text-tertiary:     #5C6270;
+
+    // Radii
+    out property <length> radius-sm:        8px;
+    out property <length> radius-md:        12px;
+    out property <length> radius-lg:        16px;
+    out property <length> radius-xl:        24px;
+    out property <length> radius-pill:      999px;
+
+    // Motion
+    out property <duration> dur-fast:       150ms;
+    out property <duration> dur-base:       300ms;
+    out property <duration> dur-slow:       600ms;
+
+    // ── Mappings to Legacy Internal Names ────────────────────────────────────
+
+    out property <color> bg:        bg-base;
+    out property <color> card:      bg-surface;
+    out property <color> surface:   bg-surface-raised;
+    out property <color> btn:       bg-glass-soft;
+    out property <color> btn-hov:   bg-glass-hover;
+    out property <color> btn-prs:   bg-glass;
+    out property <color> eq:        primary;
+    out property <color> eq-hov:    primary-dim;
+    out property <color> eq-prs:    primary; 
+    out property <color> t-main:    text-primary;
+    out property <color> t-op:      primary;
+    out property <color> t-dn:      accent-red;
+    out property <color> t-acc:     accent-amber;
+    out property <color> t-mut:     text-tertiary;
+    out property <color> t-dim:     text-secondary;
+    out property <color> t-prog:    accent-purple;
+    out property <color> t-dis:     text-primary;
+    out property <color> t-exp:     text-secondary;
+    out property <color> bdr:       border-base;
+    out property <color> div:       border-subtle;
+    out property <color> bdr-act:   primary;
+    
+    out property <length> r-btn:    radius-md;
+    out property <length> r-tab:    radius-pill;
+    out property <length> gap:      10px;
+    out property <length> pad:      16px; 
+    out property <length> h-btn:    55px; 
+    out property <length> h-tvm:    55px; 
+}
+
+export struct HistoryEntry {
+    expr:   string,
+    result: string,
+    ts:     string,
+}

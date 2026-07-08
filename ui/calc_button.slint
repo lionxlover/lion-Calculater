@@ -1,0 +1,56 @@
+// ═══════════════════════════════════════════════════════════════════════════
+//  Lion Calculator  ·  calc_button.slint
+//  LionOS Design System  ·  Rust + Slint 1.17
+// ═══════════════════════════════════════════════════════════════════════════
+
+import { LT } from "tokens.slint";
+
+// ── CalcButton ─────────────────────────────────────────────────────────────
+export component CalcButton inherits Rectangle {
+    in property <string> lbl: "";
+    in property <image> icon;
+    in property <bool> has-icon: false;
+    in property <bool> is-square: false;
+    in property <int> cols: 1;
+    in property <color> fg:  LT.t-main;
+    in property <color> bg:  LT.btn;
+    in property <color> hov: LT.btn-hov;
+    in property <color> prs: LT.btn-prs;
+    in property <length> fs:  19px;
+    callback clicked();
+
+    width: root.cols * 55px + (root.cols - 1) * 10px;
+    height: 55px;
+    border-radius: LT.r-btn;
+    border-width: 1px;
+    border-color: LT.bdr;
+    background: ta.pressed ? root.prs : ta.has-hover ? root.hov : root.bg;
+    animate background {
+        duration: LT.dur-fast;
+        easing: ease-out;
+    }
+
+    ta := TouchArea {
+        clicked => { root.clicked(); }
+    }
+
+    Text {
+        visible: !root.has-icon;
+        text: root.lbl;
+        color: root.fg;
+        font-size: root.fs;
+        font-weight: 500;
+        horizontal-alignment: center;
+        vertical-alignment: center;
+    }
+
+    Image {
+        visible: root.has-icon;
+        source: root.icon;
+        colorize: root.fg;
+        width: parent.height * 0.45;
+        height: parent.height * 0.45;
+        x: (parent.width - self.width) / 2;
+        y: (parent.height - self.height) / 2;
+    }
+}
